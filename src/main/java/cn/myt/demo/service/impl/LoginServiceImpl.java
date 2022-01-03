@@ -5,19 +5,21 @@ import cn.myt.demo.dto.LoginDTO;
 import cn.myt.demo.mapper.UserMapper;
 import cn.myt.demo.model.User;
 import cn.myt.demo.service.LoginService;
+import cn.myt.demo.util.JwtUtil;
 import cn.myt.demo.vo.LoginVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.UUID;
 
 /**
  * @author: mayating
  * @date: 2022/1/2
  */
 @Service
+@Slf4j
 public class LoginServiceImpl implements LoginService {
 
     @Resource
@@ -41,7 +43,11 @@ public class LoginServiceImpl implements LoginService {
             loginVO.setId(user.getId());
             //这里token直接使用一个uuid
             //使用jwt的情况下，会生成一个jwt token, jwt token 里会包含用户的信息
-            loginVO.setToken(UUID.randomUUID().toString());
+            //loginVO.setToken(UUID.randomUUID().toString());
+            //loginVO.setUser(user);
+            log.info("登录成功！生成token! ");
+            String token = JwtUtil.createToken(user);
+            loginVO.setToken(token);
             loginVO.setUser(user);
             return Result.success(loginVO);
         }
